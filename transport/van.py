@@ -1,8 +1,8 @@
 from transport.vehicle import Vehicle
 
 class Van(Vehicle):
-    def __init__(self, capacity, is_refrigerated , current_load=0):
-        super().__init__(capacity, current_load)
+    def __init__(self, capacity, is_refrigerated):
+        super().__init__(capacity, is_refrigerated)
         self.is_refrigerated  = is_refrigerated 
 
     def __str__(self):

@@ -1,8 +1,8 @@
 from transport.vehicle import Vehicle
 
 class Ship(Vehicle):
-    def __init__(self, capacity, name, current_load=0):
-        super().__init__(capacity, current_load)
+    def __init__(self, capacity, name):
+        super().__init__(capacity, name)
         self.name = name
 
     def __str__(self):

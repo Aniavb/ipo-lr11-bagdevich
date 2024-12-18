@@ -2,19 +2,18 @@ import random
 from transport.client import Client
 
 class Vehicle:
+    vehicle_counter = 1
+
     def __init__(self, capacity, current_load=0):
         self.vehicle_id = str(random.randint(1000, 100000))
         try:
             capacity = int(capacity)
         except ValueError:
             raise ValueError("Грузоподъемность указывается числом")
-        try:
-            current_load = int(current_load)
-        except ValueError:
-            raise ValueError("Текущая загрузка указывается числом")
+        Vehicle.vehicle_counter += 1
         self.capacity = capacity
         self.clients_list = []
-        self.current_load = current_load
+        self.current_load = 0
 
     def load_cargo(self, client):
         try:

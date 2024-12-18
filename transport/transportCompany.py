@@ -26,34 +26,19 @@ class TransportCompany:
         return self.clients
 
     def optimize_cargo_distribution(self):
-        priority = []
-        not_priority = []
-        success = []
-        for self_client in self.clients:
-            if self_client.is_vip:
-                priority.append(self_client)
-        for self_client in self.clients:
-            if self_client not in priority:
-                not_priority.append(self_client)
-        for self_client in priority:
+        sorted_clients = sorted(self.clients, key=lambda c: not c.is_vip)
+
+        for vehicle in self.vehicles:
+            vehicle.clients_list.clear()
+            vehicle.current_load = 0
+
+        for client in sorted_clients:
             for vehicle in self.vehicles:
-                free_space = vehicle.capacity - vehicle.current_load
-                weight = self_client.cargo_weight
-                if free_space >= weight:
-                    vehicle.current_load += weight
-                    vehicle.clients_list.append(self_client)
-                    success.append(self_client)
+                try:
+                    vehicle.load_cargo(client)
+                    print(f"Груз клиента {client.name} загружен в {vehicle}")
                     break
-        for self_client in not_priority:
-            for vehicle in self.vehicles:
-                free_space = vehicle.capacity - vehicle.current_load
-                weight = self_client.cargo_weight
-                if free_space >= weight:
-                    vehicle.current_load += weight
-                    vehicle.clients_list.append(self_client)
-                    success.append(self_client)
-                    break
-        print("Груз успешно оптимизирован и распределен для следующих клиентов компании:", end=" ")
-        for client in success:
-            print(f"{client.name}", end=" ")
-        print()
+                except ValueError:
+                    continue
+
+        print("Распределение грузов завершено.")

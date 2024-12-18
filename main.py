@@ -4,190 +4,84 @@ from transport.client import Client
 from transport.ship import Ship
 from transport.transportCompany import TransportCompany
 
-beaut = "=" * 20
-Status = True
-all_clients = []
-all_vehicles = []
-all_company = []
+def main():
+    company = TransportCompany("Компания")
 
-def double_decor():
-    print(f"{beaut}{beaut}")
+    while True:
+        print("\nМеню:")
+        print("1. Добавить клиента")
+        print("2. Добавить фургон")
+        print("3. Добавить судно")
+        print("4. Распределить грузы")
+        print("5. Показать транспорт и загрузку")
+        print("6. Вывести всех клиентов")
+        print("7. Вывести весь транспорт")
+        print("8. Выйти")
 
-def print_menu():
-    print(f"{beaut} Меню {beaut}")
-    print(f"1 - Создать клиента")
-    print(f"2 - Управлять транспортом")
-    print(f"3 - Управлять компаниями")
-    print(f"4 - Вывести информацию о всех клиентах")
-    print(f"5 - Вывести информацию о всех транспортах")
-    print(f"6 - Вывести информацию о всех компаниях")
-    print(f"7 - Выход с программы")
+        choice = input("Выберите пункт меню: ")
 
-def print_vehicle_menu():
-    print(f"{beaut} Управлять транспортом {beaut}")
-    print(f"1 - Создать фургон")
-    print(f"2 - Создать судно")
-    print(f"3 - Загрузить груз клиента в транспорт")
-
-def print_company_menu():
-    print(f"{beaut} Управлять компаниями {beaut}")
-    print(f"1 - Создать компанию")
-    print(f"2 - Добавить транспортное средство в компанию")
-    print(f"3 - Список всех транспортных средств компании")
-    print(f"4 - Добавить клиента в компанию")
-    print(f"5 - Распределить грузы клиентов по транспортным средствам")
-
-while Status:
-    print_menu()
-    double_decor()
-    input_data = input("Введите номер: ")
-    double_decor()
-    try:
-        input_data = int(input_data)
-    except ValueError:
-        print("Введите корректное значение!")
-    if input_data == 1:
-        name = input("Введите имя нового клиента: ")
-        cargo = input("Введите вес груза нового клиента: ")
-        while True:
-            is_vip = input("Укажите, является ли новый клиент VIP? (1 - да / 2 - нет) ")
-            if is_vip == "1":
-                is_vip = True
-                break
-            elif is_vip == "2":
-                is_vip = False
-                break
-            else:
-                print("Введите корректное значение (1 или 2)")
-        try:
-            cargo = int(cargo)
-            if cargo >= 0:
-                all_clients.append(Client(name, cargo, is_vip))
-                print("Новый клиент был успешно создан!")
-            else:
-                print("Введите корректное значение веса груза нового клиента!")
-        except ValueError as e:
-            print(f"Ошибка: {e}")
-    elif input_data == 2:
-        print_vehicle_menu()
-        double_decor()
-        input_data = input("Введите номер: ")
-        double_decor()
-        try:
-            input_data = int(input_data)
-        except ValueError:
-            print("Введите корректное значение!")
-        if input_data == 1:
-            capacity = input("Введите грузоподъемность фургона: ")
-            is_refrigerated  = input("Введите есть ли холодильник: ")
+        if choice == "1":
             try:
-                capacity = int(capacity)
-                if capacity >= 0:
-                    all_vehicles.append(Van(capacity, is_refrigerated))
-                    print("Грузовик создан!")
-                else:
-                    print("Введите корректное значение грузоподъемности!")
+                name = input("Введите имя клиента: ")
+                weight = float(input("Введите вес груза (кг): "))
+                is_vip_input = input("Клиент VIP? (да/нет): ").strip().lower()
+                is_vip = is_vip_input == "да"
+
+                client = Client(name, weight, is_vip)
+                company.add_client(client)
+                print("Клиент добавлен.")
             except ValueError as e:
                 print(f"Ошибка: {e}")
-        elif input_data == 2:
-            capacity = input("Введите грузоподъемность судна: ")
-            name = input("Введите имя судна: ")
+
+        elif choice == "2":
             try:
-                capacity = int(capacity)
-                if capacity >= 0:
-                    all_vehicles.append(Ship(capacity, name))
-                    print("Судно создано!")
-                else:
-                    print("Введите корректное значение грузоподъемности!")
+                capacity = int(input("Введите грузоподъемность фургона (т): "))
+                if capacity <= 0:
+                    raise ValueError("Грузоподъемность должна быть положительной.")
+                is_refrigerated_input = input("Введите есть ли холодильник (да/нет): ").strip().lower()
+                is_refrigerated = is_refrigerated_input == 'да'
+                vehicle = Van(capacity, is_refrigerated)
+                company.add_vehicle(vehicle)
+                print("Фургон добавлен.")
             except ValueError as e:
                 print(f"Ошибка: {e}")
-        elif input_data == 3:
-            target_vehicle = input("Введите номер транспорта, в который хотите загрузить груз клиента: ")
-            target_client = input("Введите номер клиента, груз которого хотите загрузить: ")
+
+        elif choice == "3":
             try:
-                target_vehicle = int(target_vehicle)
-                target_client = int(target_client)
-                all_vehicles[target_vehicle - 1].load_cargo(all_clients[target_client - 1])
-                print("Груз успешно загружен!")
-            except Exception as e:
-                print(f"Возникла ошибка! Проверьте корректность введенных данных! Ошибка: {e}")
-    elif input_data == 3:
-        print_company_menu()
-        input_data = input("Введите номер: ")
-        double_decor()
-        try:
-            input_data = int(input_data)
-        except ValueError:
-            print("Введите корректное значение!")
-        if input_data == 1:
-            name = input("Введите название компании: ")
-            company = TransportCompany(name)
-            all_company.append(company)
-            print("Компания успешно создана!")
-        elif input_data == 2:
-            target_vehicle = input("Введите номер транспорта, который хотите добавить в компанию: ")
-            target_company = input("Введите номер компании, к которой хотите добавить транспорт: ")
-            try:
-                target_company = int(target_company)
-                target_vehicle = int(target_vehicle)
-                all_company[target_company - 1].add_vehicle(all_vehicles[target_vehicle - 1])
-                print("Транспорт успешно добавлен!")
-            except Exception as e:
-                print(f"Произошла ошибка! Проверьте корректность введенных данных! Ошибка: {e}")
-        elif input_data == 3:
-            target_company = input("Введите номер компании, список транспорта которой вы хотите посмотреть: ")
-            try:
-                target_company = int(target_company)
-                double_decor()
-                print(f"Вот список транспорта компании с идентификатором {target_company}:")
-                target_company -= 1
-                id = 0
-                for vehicle in all_company[target_company].list_vehicles():
-                    id += 1
-                    print(f"{id}. {vehicle}")
-            except ValueError:
-                print("Введите корректное значение!")
-        elif input_data == 4:
-            target_company = input("Введите номер компании, куда хотите добавить клиента: ")
-            target_client = input("Введите номер клиента, которого хотите добавить в компанию: ")
-            try:
-                target_company = int(target_company)
-                target_client = int(target_client)
-                all_company[target_company - 1].add_client(all_clients[target_client - 1])
-                print("Клиент успешно добавлен!")
-            except ValueError:
-                print("Введите корректное значение!")
-        elif input_data == 5:
-            target_company = input("Введите номер компании, где хотите распределить груз: ")
-            try:
-                target_company = int(target_company)
-                all_company[target_company - 1].optimize_cargo_distribution()
-            except ValueError:
-                print("Введите корректное значение номера компании!")
-    elif input_data == 4:
-        id = 0
-        for client in all_clients:
-            id += 1
-            vip = "Да" if client.is_vip else "Нет"
-            print(f"{id}. Имя: {client.name}. Вес груза: {client.cargo_weight}. VIP-статус: {vip}")
-    elif input_data == 5:
-        id_number = 0
-        for vehicle in all_vehicles:
-            id_number += 1
-            print(f"{id_number}. {vehicle}")
-        print()
-    elif input_data == 6:
-        id = 0
-        for company in all_company:
-            id += 1
-            print(f"{id}. Название компании: {company.name}")
-            print(f"|| Список транспортных средств: ")
+                capacity = int(input("Введите грузоподъемность судна (т): "))
+                if capacity <= 0:
+                    raise ValueError("Грузоподъемность должна быть положительной.")
+                name_input = input("Введите название судна: ")
+                name = name_input
+                vehicle = Ship(capacity, name)
+                company.add_vehicle(vehicle)
+                print("Судно добавлено.")
+            except ValueError as e:
+                print(f"Ошибка: {e}")
+
+        elif choice == "4":
+            company.optimize_cargo_distribution()
+            print("Грузы распределены.")
+
+        elif choice == "5":
             for vehicle in company.list_vehicles():
-                print(f"| {vehicle}")
-            print(f"||Список клиентов компании: ")
+                print(vehicle)
+                for client in vehicle.clients_list:
+                    print(f"  - {client}")
+
+        elif choice == "6":
             for client in company.list_clients():
-                vip = "Да" if client.is_vip else "Нет"
-                print(f"| Имя клиента: {client.name}. Вес груза: {client.cargo_weight}. VIP-статус: {vip}")
-    elif input_data == 7:
-        Status = False
-        print("Выход.")
+                print(client)
+
+        elif choice == "7":
+            for vehicle in company.list_vehicles():
+                print(vehicle)
+
+        elif choice == "8":
+            print("Выход из программы.")
+            break
+        else:
+            print("Неверный ввод, попробуйте снова.")
+
+if __name__ == "__main__":
+    main()
